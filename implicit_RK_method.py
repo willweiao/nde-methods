@@ -56,7 +56,7 @@ def quasi_newton(c, A, b,f,D_yf,h,t_n,y_n,TOL, max_its):
         DG = np.eye(s*d)- np.kron(h*A, dyf)
         lu, piv = lu_factor(DG) 
       
-        G=np.zeros_like(K)
+        G=np.zeros((s,d))
 
         for i in range(s):
 
@@ -64,14 +64,28 @@ def quasi_newton(c, A, b,f,D_yf,h,t_n,y_n,TOL, max_its):
             yi=y_n+h*np.dot(A[i],K)
             G[i] = K[i] - f(ti, yi)
 
-        delta_K = lu_solve((lu, piv), -G)
-        K += delta_K
+        # Reshape G to a 1D vector for solving
+        G_flat = G.flatten()
+
+        # Solve for delta_K using LU decomposition
+        delta_K_flat = lu_solve((lu, piv), -G_flat)
+
+        # Reshape delta_K back to original shape
+        delta_K = delta_K_flat.reshape(s, d)
         
         # Compute theta_k and check stopping criterion
         norm_dk_m1=norm_dk_m
         norm_dk_m=np.linalg.norm(delta_K, 'fro')
-        theta_m=norm_dk_m/norm_dk_m1
-        e_m=norm_dk_m * theta_m/(1-theta_m)
+
+        if it == 0:
+            # Skip e_m calculation in the first iteration
+            e_m = np.inf
+        else:
+            # Limit theta_m to prevent divide-by-zero
+            theta_m = min(norm_dk_m / norm_dk_m1, 0.99)
+            e_m = norm_dk_m * theta_m / (1 - theta_m)
+
+        
         it += 1
 
         if it > max_its:
