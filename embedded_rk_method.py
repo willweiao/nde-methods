@@ -122,7 +122,7 @@ def adaptive_ssc(y_new, y_new_emb, h, h_min, h_max,  p_emb):
     h_old=h
 
     # Calculation
-    ee_new=np.linalg(y_new_emb-y_new, ord=2)
+    ee_new=np.linalg.norm(y_new_emb-y_new, ord=2)
     h_new=(rho*TOL/ee_new)**(1/(p_emb+1))
     h_new=min(h_new, q*h, h_max)
 
