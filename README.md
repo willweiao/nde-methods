@@ -1,1 +1,1 @@
-This is a personal documentation for the course numerical differential equations including implemented explicit methods and implicit runge kutta methods, shown with the examples given on the exercise sheet. 
+This is a personal documentation for the course numerical differential equations including implemented explicit methods and implicit runge kutta methods, shown with the examples given on the exercise sheet. This is very incomplete though.
